@@ -12,10 +12,14 @@ Creates the [VVV Auto Site Setup](https://github.com/Varying-Vagrant-Vagrants/VV
 
 Clone the repo onto your VVV box and run the script inside the VM.  
 
+    vagrant up
     vagrant ssh  
     git clone https://github.com/rheinardkorf/vvv-scripts.git  
     cd vvv-scripts  
     ./vvv-new-single.rb  
+    exit  
+    vagrant provision  
+    vagrant up  
 
 ----- 
 
