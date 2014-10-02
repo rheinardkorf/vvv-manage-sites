@@ -17,30 +17,35 @@ ARGV.to_enum.with_index(1).each do|a, i|
 
   if /\-\-folder/.match( a )
     val = a.dup
+    val.sub! '--folder=', ''
     val.sub! '--folder', ''
     options['folder'] = val
   end
   
   if /\-\-site\_title/.match( a )
     val = a.dup
+    val.sub! '--site_title=', ''    
     val.sub! '--site_title', ''
     options['site_title'] = val
   end
 
   if /\-\-domain/.match( a )
     val = a.dup
+    val.sub! '--domain=', ''    
     val.sub! '--domain', ''
     options['domain'] = val
   end  
   
   if /\-\-database/.match( a )
     val = a.dup
+    val.sub! '--database=', ''    
     val.sub! '--database', ''
     options['database'] = val
   end    
   
   if /\-\-email/.match( a )
     val = a.dup
+    val.sub! '--email=', ''    
     val.sub! '--email', ''
     options['email'] = val
   end  
@@ -115,12 +120,11 @@ dirname = "#{server_root}#{options['folder']}/"
 
 tokens = dirname.split("/")
 
-0.upto( tokens.size - 1 ) do |n|
+1.upto( tokens.size - 1 ) do |n|
   dir = tokens[0..n]
   dir = dir.join("/")
   Dir.mkdir(dir) unless Dir.exist?(dir)
 end
-
 
 # ---------------------------------------------
 # Create vvv-init.sh
@@ -205,7 +209,7 @@ f.close
 # ---------------------------------------------
 # Create vvv-hosts
 # ---------------------------------------------
-# Note: For this to work you have to have the 
+# Note: For this to work you have to have the
 # Vagrant HostUpdated plugin installed
 # ---------------------------------------------
 f = File.new( "#{server_root}#{options['folder']}/vvv-hosts", "w" )
@@ -218,5 +222,5 @@ f.close
 puts "\n--------------------------------------------------------"
 puts "Auto Site Setup files created.\n"
 puts "Don't forget to run 'vagrant provision' outside the VM"
-puts "to initialize the sites."  
+puts "to initialize the sites."
 puts "--------------------------------------------------------\n\n"
