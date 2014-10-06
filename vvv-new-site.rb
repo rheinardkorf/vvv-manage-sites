@@ -14,6 +14,7 @@
 # --email         e.g. --email"me@myprovider.com"
 # --multisite     adding '--multisite' will perform a WordPress network installation
 # --subdomains    adding '--subdomains' will use sub-domains for the sites in your network and not sub-directories
+# --version       e.g. --version"3.8", will load WordPress 3.8
 #
 # License: License: GPLv2  
 #
@@ -89,6 +90,12 @@ ARGV.to_enum.with_index(1).each do|a, i|
     options['subdomains'] = true
   end  
   
+  if /\-\-version/.match( a )
+    val = a.dup
+    val.sub! '--version=', ''    
+    val.sub! '--version', ''
+    options['version'] = val
+  end      
   
 end
 
@@ -141,7 +148,7 @@ unless options.has_key?('folder') && options.has_key?('site_title') && options.h
     end    
   end    
 
-  if ! options.has_key?('subdomains')
+  if ! options.has_key?('subdomains') && options['multisite']
     STDOUT.print "Do you want to use sub-domains (in stead of sub-directories)? (y/n): "
     STDOUT.flush
     multisite = STDIN.gets.chomp
@@ -161,7 +168,8 @@ unless options.has_key?('folder') && options.has_key?('site_title') && options.h
   puts "--domain\te.g. --domain\"test.dev\""
   puts "--email\t\te.g. --email\"me@myprovider.com\""
   puts "--multisite\t\tadding '--multisite' will perform a WordPress network installation"
-  puts "--subdomains\t\tadding '--subdomains' will use sub-domains for the sites in your network and not sub-directories"    
+  puts "--subdomains\t\tadding '--subdomains' will use sub-domains for the sites in your network and not sub-directories"
+  puts "--version       e.g. --version\"3.8\", will load WordPress 3.8"
   puts "--------------------------------------------------------\n\n"  
 
 end
@@ -207,7 +215,14 @@ f.puts "mysql -u root --password=root -e \"GRANT ALL PRIVILEGES ON #{options['da
 f.puts "if [ ! -d htdocs ]"
 f.puts "then"
 f.puts "    echo \"Checking out WordPress\""
-f.puts "    wp core download --path=htdocs"
+
+# Current stable or --version?
+if ! options.has_key?('version')
+  f.puts "    wp core download --path=htdocs --version#{options['version']}"
+else
+  f.puts "    wp core download --path=htdocs"  
+end
+
 f.puts "    cd htdocs"
 f.puts "    wp core config --dbname=\"#{options['database']}\" --dbuser=wp --dbpass=wp --dbhost=\"localhost\" --allow-root --extra-php <<PHP"
 f.puts "// Enable WP_DEBUG mode"
@@ -224,8 +239,12 @@ f.puts ""
 f.puts "// Use dev versions of core JS and CSS file"
 f.puts "define('SCRIPT_DEBUG', true);"
 f.puts ""
-f.puts "/* Multisite */"
-f.puts "define('MULTISITE', true);"
+
+# If multisite
+if options['multisite']
+  f.puts "/* Multisite */"
+  f.puts "define('MULTISITE', true);"
+end
 
 # If using subdomains
 if options['subdomains']
