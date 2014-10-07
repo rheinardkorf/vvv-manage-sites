@@ -359,7 +359,7 @@ if options['subdomains']
   f.puts "if ( defined( 'MULTISITE' ) && MULTISITE && defined( 'SUBDOMAIN_INSTALL' ) && SUBDOMAIN_INSTALL ){"
   f.puts ""
   f.puts "	class VVV_Host_Update {"
-  f.puts "		private $path = \"/srv/www/multisite/vvv-hosts\";"
+  f.puts "		private $path = \"#{server_root}#{options['folder']}/vvv-hosts\";"
   f.puts ""	
   f.puts "		function __construct() {"
   f.puts "			add_action( 'wpmu_new_blog', array( &$this, 'blog_created' ), 10, 6 );"
