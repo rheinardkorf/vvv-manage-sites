@@ -217,8 +217,8 @@ f.puts "then"
 f.puts "    echo \"Checking out WordPress\""
 
 # Current stable or --version?
-if ! options.has_key?('version')
-  f.puts "    wp core download --path=htdocs --version#{options['version']}"
+if options.has_key?('version')
+  f.puts "    wp core download --path=htdocs --version=#{options['version']}"
 else
   f.puts "    wp core download --path=htdocs"  
 end
