@@ -1,5 +1,45 @@
 <?php
 
+
+function get_site_info( $item, $post ) {
+	$site = array(
+		'path' => $post['path'][ $item ],
+		'title' => ! empty( $post['title'][ $item ] ) ? $post['title'][ $item ] : '',
+		'url' => ! empty( $post['url'][ $item ] ) ? $post['url'][ $item ] : '',
+		'database' => ! empty( $post['database'][ $item ] ) ? $post['database'][ $item ] : '',
+		'email' => ! empty( $post['email'][ $item ] ) ? $post['email'][ $item ] : '',
+	);
+
+	return $site;
+}
+
+
+if ( isset( $_POST['kill'] ) ) {
+	$item = array_keys( $_POST['kill'] );
+	$item = array_pop( $item );
+	
+	$site = get_site_info( $item, $_POST );
+
+	$command = './scripts/vvv-kill-site.rb --path"' . $site['path'] . '" --database"' . $site['database'] . '"';
+	$msg = $command;
+	$msg .= '<div><pre>' . shell_exec( $command ) . '</pre></div>';
+	
+}
+
+if ( isset( $_POST['reset'] ) ) {
+	$item = array_keys( $_POST['reset'] );
+	$item = array_pop( $item );
+
+	$site = get_site_info( $item, $_POST );
+
+	$command  = './scripts/vvv-reset-site.rb --path"' . $site['path'] . '"';
+	$command .= ' --email"' . $site['email'] . '" --title"' . $site['title'] . '" --url"' . $site['url'] . '"';
+		
+	$msg = $command;
+	$msg .= '<div><pre>' . shell_exec( $command ) . '</pre></div>';
+}
+
+
 if ( isset( $_POST['submit'] ) ) {
 	
 	$error = false;
@@ -37,6 +77,8 @@ ob_start();
 	<html>
 	<head>
 		<title>Create new VVV WordPress site</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="assets/script.js"></script>
 		<style>
 		div { padding-bottom:10px; }
 		label{ width: 200px; display:inline-block;}
@@ -54,6 +96,19 @@ ob_start();
 			margin-bottom: 20px;
 			padding:20px;
 		}
+		table {
+			width: 100%;
+		}
+		th {
+			text-align: left;
+		}
+		tr {
+			height: 20;
+		}
+		.even {
+			background: #f1f1f1;
+		}
+		
 		</style>
 	</head>
 	<body>	
@@ -64,7 +119,7 @@ ob_start();
 
 		<h2>New Site Options</h2>
 	
-		<form action="" method="post">
+		<form action="" method="post" id="manage">
 	
 			<div>
 				<label for="site_folder">New Site Folder:</label>
@@ -102,7 +157,20 @@ ob_start();
 				<label for="submit"></label>
 				<input type="submit" name="submit" value="Ceate Site" />
 			</div>	
-		</form>
+		
+			<hr />
+		
+			<table id="provisioned">
+				<thead>
+					<tr>
+						<th>Path</th><th>Name</th><th>URL</th><th>Database</th><th>Actions</th>
+					</tr>
+				</thead>
+				<tr class="loading"><td collspan="5">Scanning /srv/www for WordPress sites... <span class="time">0</span> seconds.</td></tr>
+			</table>
+			
+		</form>		
+		
 	</body>
 	<html>
 <?php
