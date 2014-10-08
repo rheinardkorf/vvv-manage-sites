@@ -244,12 +244,16 @@ f.puts ""
 if options['multisite']
   f.puts "/* Multisite */"
   f.puts "define('MULTISITE', true);"
-end
-
-# If using subdomains
-if options['subdomains']
-  f.puts "define('SUBDOMAIN_INSTALL', true);"
+  # If using subdomains
+  if options['subdomains']
+    f.puts "define('SUBDOMAIN_INSTALL', true);"
+  else  
+    f.puts "define('SUBDOMAIN_INSTALL', false);"
+  end  
   f.puts "define('DOMAIN_CURRENT_SITE', '#{options['domain']}');"
+  f.puts "define('PATH_CURRENT_SITE', '/');"
+  f.puts "define('SITE_ID_CURRENT_SITE', 1);"
+  f.puts "define('BLOG_ID_CURRENT_SITE', 1);"
 end
 
 f.puts "PHP"
