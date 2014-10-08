@@ -46,16 +46,16 @@ if ( isset( $_POST['submit'] ) ) {
 	
 	$error = empty( $_POST['folder'] );
 	$error = empty( $_POST['site_title'] );
-	$error = empty( $_POST['database'] );	
+	$error = empty( $_POST['new_database'] );	
 	$error = empty( $_POST['domain'] );	
 	
 	if ( ! $error ) {
 
 		$folder = $_POST['folder'];
 		$site_title = $_POST['site_title'];
-		$database = $_POST['database'];
+		$database = $_POST['new_database'];
 		$domain = $_POST['domain'];
-		$email = empty( $_POST['email'] ) ? 'admin@' . $domain : $_POST['email'];
+		$email = empty( $_POST['admin_email'] ) ? 'admin@' . $domain : $_POST['admin_email'];
 		$multisite = isset( $_POST['multisite'] ) ? '--multisite ' : ' ';
 		$subdomains = isset( $_POST['subdomains'] ) ? '--subdomains ' : ' ';
 		$version = empty( $_POST['version'] ) ? '' : '--version"' . $_POST['version'] . '"';
@@ -131,7 +131,7 @@ ob_start();
 			</div>
 			<div>	
 				<label for="site_folder">Database Name: <small>No dots!</small></label>
-				<input type="textbox" name="database" />	
+				<input type="textbox" name="new_database" />	
 			</div>
 			<div>	
 				<label for="site_folder">Domain:</label>
@@ -139,7 +139,7 @@ ob_start();
 			</div>
 			<div>	
 				<label for="site_folder">Admin E-mail:</label>
-				<input type="textbox" name="email" />
+				<input type="textbox" name="admin_email" />
 			</div>
 			<div>	
 				<label for="site_folder">This is a multi-site/network</label>
