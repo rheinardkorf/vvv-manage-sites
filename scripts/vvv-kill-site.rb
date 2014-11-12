@@ -70,7 +70,9 @@ if wp_path.length > 0
     end
   end
   
-  `rm -rf #{site['path']}`
+  the_path = site['path'].gsub( /\/htdocs$/, '' )
+  
+  `rm -rf #{the_path}`
   
   return_message = "#{return_message}\nFolder #{site['path']} removed."
   
